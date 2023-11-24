@@ -2,12 +2,15 @@ package com.example.MultiOperation.Controller;
 
 import com.example.MultiOperation.Entity.UserRole;
 import com.example.MultiOperation.Entity.Users;
+import com.example.MultiOperation.Model.CommonResponse;
 import com.example.MultiOperation.Service.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,26 +29,33 @@ public class Controller {
     }
 
     @PostMapping("/searchUser")
-    public Optional<Users> searchUser(@RequestBody Users userRequest) {
+    public List<CommonResponse> searchUser(@RequestBody Users userRequest) {
 
         Optional<Users> userDetail = userService.searchUser(userRequest.getId());
-        List<UserRole> roles = null;
+       // List<UserRole> roles = null;
+        CommonResponse commonResponse=new CommonResponse();
 
 
-        if (userDetail.get().getUserRoles().isEmpty()) {
-            System.out.println("user role is not available");
-            userDetail.get().setUserRoles(roles);
-        } else {
-            System.out.println("user role is available");
+        if (userDetail.isEmpty()) {
+
+            commonResponse.setUsers(userDetail);
+            commonResponse.setMessage("User not found");
+            commonResponse.setCode("1111");
         }
-        return userDetail;
+        else
+        {
+            commonResponse.setUsers(userDetail);
+            commonResponse.setMessage("Sucess");
+            commonResponse.setCode("0000");
+        }
+        return Collections.singletonList(commonResponse);
     }
 
 
     @PostMapping("/upload")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Users> handleFileUpload(@RequestParam("file") MultipartFile file) {
         List<Users> dataList = userService.readDataFromExcel(file);
-        return ResponseEntity.ok("File uploaded successfully!");
+        return
     }
 
     @PostMapping("/saveData")

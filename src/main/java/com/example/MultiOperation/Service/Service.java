@@ -63,19 +63,13 @@ public class Service {
                 UserRole roleData=new UserRole();
 
 
-                //        data.setId(Long.valueOf(12));
                 data.setName(row.getCell(0).toString());
                 data.setEmail(row.getCell(1).toString());
                 data.setMobileNo(row.getCell(2).toString());
-
                 roleData.setUserRoles(row.getCell(3).toString());
                 roleData.setDesignation(row.getCell(4).toString());
                 roleData.setUsers(data);
-
                 dataRole.add(roleData);
-                //data.setUserRoles(dataRole);
-
-
                 dataList.add(data);
 
             }
