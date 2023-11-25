@@ -57,6 +57,18 @@
 			<artifactId>spring-web</artifactId>
 			<version>6.0.13</version>
 		</dependency>
+
+
+		<dependency>
+			<groupId>com.twilio.sdk</groupId>
+			<artifactId>twilio</artifactId>
+			<version>9.2.5</version>
+		</dependency>
+		<!--		<dependency>-->
+<!--			<groupId>com.twilio.sdk</groupId>-->
+<!--			<artifactId>twilio-java-sdk-beta</artifactId>-->
+<!--			<version>8.46.0</version>-->
+<!--		</dependency>-->
 	</dependencies>
 
 

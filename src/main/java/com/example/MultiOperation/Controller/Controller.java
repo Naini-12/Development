@@ -1,12 +1,9 @@
 package com.example.MultiOperation.Controller;
 
-import com.example.MultiOperation.Entity.UserRole;
 import com.example.MultiOperation.Entity.Users;
 import com.example.MultiOperation.Model.CommonResponse;
 import com.example.MultiOperation.Service.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,9 +50,9 @@ public class Controller {
 
 
     @PostMapping("/upload")
-    public ResponseEntity<Users> handleFileUpload(@RequestParam("file") MultipartFile file) {
+    public List<Users> handleFileUpload(@RequestParam("file") MultipartFile file) {
         List<Users> dataList = userService.readDataFromExcel(file);
-        return
+        return dataList;
     }
 
     @PostMapping("/saveData")
@@ -64,6 +61,21 @@ public class Controller {
 
         userService.saveAllData(userData);
         return "Saved";
+    }
+
+
+    @GetMapping(value = "/sendOtp")
+    public String otpGenerate(@RequestParam String MobileNo)
+    {
+        Integer otp=userService.otpGenerate(MobileNo);
+
+        if(otp.toString().length()==6)
+        {
+
+          userService.otpSendSms(MobileNo,otp);
+        }
+
+        return "Generated otp is"+otp;
     }
 
 

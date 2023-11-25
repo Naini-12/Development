@@ -1,15 +1,19 @@
 package com.example.MultiOperation.Service;
 
+import com.example.MultiOperation.Configration.Configration;
 import com.example.MultiOperation.Entity.UserRole;
 import com.example.MultiOperation.Entity.Users;
 import com.example.MultiOperation.Repository.UserRepository;
 import com.example.MultiOperation.Repository.UserRoleRepository;
+import com.twilio.Twilio;
+import com.twilio.type.PhoneNumber;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
+import com.twilio.rest.api.v2010.account.Message;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -24,6 +28,9 @@ public class Service {
 
     @Autowired
     private UserRoleRepository userRoleRepo;
+    @Autowired
+    private Configration twilloConfigration;
+
     public List<Users> userDetails()
     {
 
@@ -31,6 +38,7 @@ public class Service {
         userDetails=repo.findAll();
         return userDetails ;
     }
+
 
 
     public Optional<Users> searchUser(Long userId)
@@ -89,5 +97,19 @@ public class Service {
 
         repo.saveAll(userData);
         return "Saved";
+    }
+
+    public int otpGenerate(String mobileNo) {
+        int otpValue = (int) Math.floor(Math.random() * 900000) + 100000;
+        return otpValue;
+    }
+
+    public void otpSendSms(String mobileNo,int otp)
+    {
+
+        Twilio.init(twilloConfigration.getAccountSid(), twilloConfigration.getAuthToken());
+        Message message= Message.creator(new PhoneNumber("+91"+mobileNo),
+                 new PhoneNumber(twilloConfigration.getPhoneNumber()),"This otp is used for authentication, generated otp is "+otp+" valid for 10 mins.").create();
+        System.out.println("SMS sent with SID: " + message.getSid());
     }
 }
