@@ -1,6 +1,7 @@
 package com.example.MultiOperation.Service;
 
 import com.example.MultiOperation.Configration.Configration;
+import com.example.MultiOperation.Entity.MobileOtp;
 import com.example.MultiOperation.Entity.UserRole;
 import com.example.MultiOperation.Entity.Users;
 import com.example.MultiOperation.Repository.UserRepository;
@@ -99,17 +100,36 @@ public class Service {
         return "Saved";
     }
 
-    public int otpGenerate(String mobileNo) {
+    public List<Integer> otpGenerate(String mobileNo) {
+
+        List<Integer> otp= new ArrayList<>();
         int otpValue = (int) Math.floor(Math.random() * 900000) + 100000;
-        return otpValue;
+        int otpId = (int) Math.floor(Math.random() * 700000) + 100000;
+
+        otp.add(otpValue);
+        otp.add(otpId);
+        return otp;
     }
 
-    public void otpSendSms(String mobileNo,int otp)
+    public String otpSendSms(String mobileNo,int otp)
     {
 
         Twilio.init(twilloConfigration.getAccountSid(), twilloConfigration.getAuthToken());
         Message message= Message.creator(new PhoneNumber("+91"+mobileNo),
                  new PhoneNumber(twilloConfigration.getPhoneNumber()),"This otp is used for authentication, generated otp is "+otp+" valid for 10 mins.").create();
         System.out.println("SMS sent with SID: " + message.getSid());
+        return  message.getSid();
+    }
+
+    public void saveOtp(List<Integer> otp) {
+
+        MobileOtp saveOtp= new MobileOtp();
+
+        saveOtp.setOtpKey(Long.valueOf(otp.get(0)));
+        saveOtp.setOtpValue(Long.valueOf(otp.get(1)));
+
+
+
+
     }
 }

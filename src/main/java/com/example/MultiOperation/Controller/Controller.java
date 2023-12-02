@@ -67,13 +67,26 @@ public class Controller {
     @GetMapping(value = "/sendOtp")
     public String otpGenerate(@RequestParam String MobileNo)
     {
-        Integer otp=userService.otpGenerate(MobileNo);
 
-        if(otp.toString().length()==6)
-        {
+        List<Integer> otp=null;
+      //  String msgId=null;
+     try {
+             otp  = userService.otpGenerate(MobileNo);
 
-          userService.otpSendSms(MobileNo,otp);
+            if (otp.size()>0)
+            {
+               // userService.saveOtp(otp);
+                String msgId= userService.otpSendSms(MobileNo, otp.get(0));
+
+              if(msgId.length()>0)
+              {
+                  userService.saveOtp(otp);
+              }
+            }
         }
+     catch (Exception e) {
+             System.out.println(e);
+         }
 
         return "Generated otp is"+otp;
     }
